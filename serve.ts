@@ -67,7 +67,7 @@ async function handleRequest(request: Request) {
     // The layout uses Slack's Block Kit to present information. You
     // can learn more about it here: https://api.slack.com/block-kit.
     return json({
-      response_type: "in_channel",
+      response_type: "ephemeral",
       blocks: urls.map(url => ({
         type: "section",
         text: {
