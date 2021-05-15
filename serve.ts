@@ -3,7 +3,7 @@ import {
   serve,
   validateRequest,
 } from "https://deno.land/x/sift@0.1.7/mod.ts";
-import { getProfileUrlFromNotion } from "./notion.ts";
+import { getProfileUrlsFromNotion } from "./notion.ts";
 
 async function handleRequest(request: Request) {
   // validateRequest() ensures that incoming requests are of methods POST and GET.
@@ -37,7 +37,7 @@ async function handleRequest(request: Request) {
         style="font-family: Avenir, Helvetica, Arial, sans-serif; font-size: 1.5rem;"
       >
         <p>
-          Visit <a href="https://github.com/fsubal/slack-shuffle-team">GitHub</a>
+          Visit <a href="https://github.com/fsubal/slack-whois-notion">GitHub</a>
           page for instructions on how to install this Slash Command on your Slack workspace.
         </p>
       </body>`,
@@ -51,33 +51,31 @@ async function handleRequest(request: Request) {
 
   try {
     const formData = await request.formData();
-    const text = formData.get("text")
+    const userName = formData.get("text")
     // The text after command (`/shuffle <text>`) is passed on to us by Slack in a form
     // field of the same name in the request.
-    if (typeof text !== 'string') {
+    if (typeof userName !== 'string') {
       return json(
         { response_type: "ephemeral", text: "usage: /whois [@user_name]" },
         { status: 400 },
       );
     }
 
-    const url = await getProfileUrlFromNotion(text)
+    const urls = await getProfileUrlsFromNotion(userName)
 
     // This is the response that's returned when the command is invoked.
     // The layout uses Slack's Block Kit to present information. You
     // can learn more about it here: https://api.slack.com/block-kit.
     return json({
       response_type: "in_channel",
-      blocks: [
-        {
+      blocks: urls.map(url => ({
           type: "section",
           text: {
             type: "mrkdwn",
             text: url,
           },
           accessory: {},
-        },
-      ],
+      })),
     });
   } catch (error) {
     // If something goes wrong in the above block, let's log the error
