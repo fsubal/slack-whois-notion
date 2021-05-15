@@ -10,14 +10,14 @@ const {
 
 const api = ky.extend({
   prefixUrl: 'https://api.notion.com/v1',
-	hooks: {
-		beforeRequest: [
-			request => {
-				request.headers.set('Authorization', `Bearer "${NOTION_API_KEY}"`);
+  hooks: {
+    beforeRequest: [
+      request => {
+        request.headers.set('Authorization', `Bearer "${NOTION_API_KEY}"`);
         request.headers.set('Notion-Version', NOTION_VERSION)
-			}
-		]
-	}
+      }
+    ]
+  }
 });
 
 export async function getProfileUrlsFromNotion(userName: string): Promise<string[]> {

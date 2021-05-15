@@ -52,7 +52,7 @@ async function handleRequest(request: Request) {
   try {
     const formData = await request.formData();
     const userName = formData.get("text")
-    // The text after command (`/shuffle <text>`) is passed on to us by Slack in a form
+    // The text after command is passed on to us by Slack in a form
     // field of the same name in the request.
     if (typeof userName !== 'string') {
       return json(
@@ -69,12 +69,12 @@ async function handleRequest(request: Request) {
     return json({
       response_type: "in_channel",
       blocks: urls.map(url => ({
-          type: "section",
-          text: {
-            type: "mrkdwn",
-            text: url,
-          },
-          accessory: {},
+        type: "section",
+        text: {
+          type: "mrkdwn",
+          text: url,
+        },
+        accessory: {},
       })),
     });
   } catch (error) {
